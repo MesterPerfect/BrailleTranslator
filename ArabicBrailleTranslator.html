@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arabic Braille Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #input-text, #output-text {
+            width: 300px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Arabic Braille Translator</h1>
+    <label for="conversion-type">Conversion Type:</label>
+    <input type="radio" id="ar2br" name="conversion-type" value="ar2br" checked>
+    <label for="ar2br">Arabic to Braille</label>
+    <input type="radio" id="br2ar" name="conversion-type" value="br2ar">
+    <label for="br2ar">Braille to Arabic</label>
+    <br><br>
+    <label for="input-text">Input Text:</label>
+    <br>
+    <textarea id="input-text"></textarea>
+    <br><br>
+    <label for="output-text">Output Text:</label>
+    <br>
+    <textarea id="output-text" readonly></textarea>
+    <br><br>
+    <button onclick="convertText()">Convert</button>
+    <button onclick="copyOutput()">Copy Output</button>
+
+    <script>
+        const arabicBraille = {
+            'ا': '⠁', 'ب': '⠃', 'ت': '⠞', 'ث': '⠹', 'ج': '⠚', 'ح': '⠓', 'خ': '⠺',
+            'د': '⠙', 'ذ': '⠺', 'ر': '⠗', 'ز': '⠵', 'س': '⠎', 'ش': '⠱', 'ص': '⠮',
+            'ض': '⠟', 'ط': '⠾', 'ظ': '⠹', 'ع': '⠪', 'غ': '⠳', 'ف': '⠋', 'ق': '⠽',
+            'ك': '⠅', 'ل': '⠇', 'م': '⠍', 'ن': '⠝', 'ه': '⠓', 'و': '⠺', 'ي': '⠽',
+            '0': '⠚', '1': '⠁', '2': '⠃', '3': '⠉', '4': '⠙', '5': '⠑',
+            '6': '⠋', '7': '⠛', '8': '⠓', '9': '⠊',
+            '.': '⠲', ',': '⠂', ':': '⠒', ';': '⠶', '?': '⠦', '!': '⠖',
+        };
+
+        const brailleArabic = { ...arabicBraille };
+        Object.keys(arabicBraille).forEach(key => {
+            brailleArabic[arabicBraille[key]] = key;
+        });
+
+        function convertText() {
+            const conversionType = document.querySelector('input[name="conversion-type"]:checked').value;
+            const inputText = document.getElementById('input-text').value;
+            let outputText = '';
+            if (conversionType === 'ar2br') {
+                outputText = arabicToBraille(inputText);
+            } else {
+                outputText = brailleToArabic(inputText);
+            }
+            document.getElementById('output-text').value = outputText;
+        }
+
+        function arabicToBraille(text) {
+            return text.split('').map(char => arabicBraille[char] || char).join('');
+        }
+
+        function brailleToArabic(text) {
+            return text.split('').map(char => brailleArabic[char] || char).join('');
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('output-text');
+            outputText.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
